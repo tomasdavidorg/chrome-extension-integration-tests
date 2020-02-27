@@ -11,7 +11,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class SimpleIT {
@@ -37,10 +36,9 @@ public class SimpleIT {
 
     @Test
     public void openGoogleTest() throws InterruptedException {
-        System.setProperty("webdriver.chrome.driver", "/home/tdavid/Downloads/chromedriver_linux64/chromedriver");
-        ChromeOptions options = new ChromeOptions();
-        options.addExtensions(new File("/home/tdavid/Data/Projects/kiegroup/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_0.2.8/dist.crx"));
-        ChromeDriver chromeDriver = new ChromeDriver(options);
+//        ChromeOptions options = new ChromeOptions();
+//        options.addExtensions(new File("/home/tdavid/Data/Projects/kiegroup/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_0.2.8/dist.crx"));
+        ChromeDriver chromeDriver = new ChromeDriver();
 //        chromeDriver.set
         chromeDriver.get("https://github.com/kiegroup/kie-wb-playground/blob/master/evaluation/src/main/resources/");
         chromeDriver.findElement(By.linkText("evaluation.bpmn")).click();
@@ -58,36 +56,6 @@ public class SimpleIT {
         Thread.sleep(5000);
         chromeDriver.findElement(By.className("kogito-button")).click();
 
-        // WebElement searchBox = firefoxDriver.findElement(By.id("lst-ib"));
-
-        //searchBox.sendKeys("Dog");
-
         Thread.sleep(20000);
-
-        //System.out.println("Page title is: " + firefoxDriver.getTitle());
-
-        chromeDriver.quit();
-
-//        System.setProperty("webdriver.chrome.logfile", "aaa.log");
-//        System.setProperty("webdriver.chrome.verboseLogging", "true");
-//        System.setProperty("webdriver.chrome.driver", "/home/tdavid/Downloads/chromedriver");
-////        System.setProperty("webdriver.chrome.driver", "C:\\chromedriver.exe");
-//
-//        ChromeOptions opt = new ChromeOptions();
-////        opt.setCapability("w3c", false);
-//        ChromeDriver driver = new ChromeDriver(opt);
-//
-//        driver.manage().logs().get(LogType.CLIENT);
-//        driver.get("http://www.google.com");
-//
-//        WebElement searchBox = driver.findElement(By.id("gsr"));
-//
-//        searchBox.sendKeys("Dog");
-//
-//        Thread.sleep(10000);
-//
-//        System.out.println("Page title is: " + driver.getTitle());
-//
-//        driver.quit();
     }
 }
