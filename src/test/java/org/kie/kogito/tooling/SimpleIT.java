@@ -47,7 +47,7 @@ public class SimpleIT {
 //        }
 
         Thread.sleep(5000);
-        //chromeDriver.findElement(By.className("kogito-button")).click();
+        chromeDriver.findElement(By.className("kogito-button")).click();
 
         Thread.sleep(20000);
     }
