@@ -13,6 +13,9 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+          
+      - name: Start Xvfb
+        run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
         
       - name: Build with Maven
-        run: xvfb-run --auto-servernum mvn -B clean verify --file pom.xml
+        run: mvn -B clean verify --file pom.xml
