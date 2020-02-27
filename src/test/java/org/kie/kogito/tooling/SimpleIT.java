@@ -1,5 +1,7 @@
 package org.kie.kogito.tooling;
 
+import java.io.File;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,9 +30,10 @@ public class SimpleIT {
     @Test
     public void openGoogleTest() throws InterruptedException {
         ChromeOptions chromeOptions = new ChromeOptions();
+        File kogitoPlugin = new File(getClass().getClassLoader().getResource("dist.crx").getFile());
         //chromeOptions.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu", "--window-size=1920x1080");
-//        chromeOptions.addExtensions(new File("/home/tdavid/Data/Projects/kiegroup/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_0.2.8/dist.crx"));
-        ChromeDriver chromeDriver = new ChromeDriver(chromeOptions);
+        chromeOptions.addExtensions(kogitoPlugin);
+                 ChromeDriver chromeDriver = new ChromeDriver(chromeOptions);
 
 //        chromeDriver.set
         chromeDriver.get("https://github.com/kiegroup/kie-wb-playground/blob/master/evaluation/src/main/resources/");
