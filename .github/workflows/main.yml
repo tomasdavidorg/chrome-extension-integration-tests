@@ -18,4 +18,6 @@ jobs:
         run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
         
       - name: Build with Maven
+        env:
+          DISPLAY: ":99.0"
         run: mvn -B clean verify --file pom.xml
