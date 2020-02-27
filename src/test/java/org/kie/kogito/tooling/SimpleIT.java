@@ -37,7 +37,7 @@ public class SimpleIT {
     @Test
     public void openGoogleTest() throws InterruptedException {
         ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("--disable-dev-shm-usage");
+        chromeOptions.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu", "--window-size=1980,1200");
 //        chromeOptions.addExtensions(new File("/home/tdavid/Data/Projects/kiegroup/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_0.2.8/dist.crx"));
         ChromeDriver chromeDriver = new ChromeDriver(chromeOptions);
 
