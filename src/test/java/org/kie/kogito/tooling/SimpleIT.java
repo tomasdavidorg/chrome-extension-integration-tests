@@ -36,9 +36,11 @@ public class SimpleIT {
 
     @Test
     public void openGoogleTest() throws InterruptedException {
-//        ChromeOptions options = new ChromeOptions();
-//        options.addExtensions(new File("/home/tdavid/Data/Projects/kiegroup/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_0.2.8/dist.crx"));
-        ChromeDriver chromeDriver = new ChromeDriver();
+        ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.addArguments("--headless");
+//        chromeOptions.addExtensions(new File("/home/tdavid/Data/Projects/kiegroup/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_0.2.8/dist.crx"));
+        ChromeDriver chromeDriver = new ChromeDriver(chromeOptions);
+
 //        chromeDriver.set
         chromeDriver.get("https://github.com/kiegroup/kie-wb-playground/blob/master/evaluation/src/main/resources/");
         chromeDriver.findElement(By.linkText("evaluation.bpmn")).click();
@@ -54,7 +56,7 @@ public class SimpleIT {
 //        }
 
         Thread.sleep(5000);
-        chromeDriver.findElement(By.className("kogito-button")).click();
+        //chromeDriver.findElement(By.className("kogito-button")).click();
 
         Thread.sleep(20000);
     }
