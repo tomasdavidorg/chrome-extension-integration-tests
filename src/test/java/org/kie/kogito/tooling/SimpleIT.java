@@ -23,7 +23,9 @@ public class SimpleIT {
     @BeforeEach
     public void createDriver() {
         ChromeOptions chromeOptions = new ChromeOptions();
-        File kogitoPlugin = new File(getClass().getClassLoader().getResource("dist.crx").getFile());
+//        File kogitoPlugin = new File(getClass().getClassLoader().getResource("dist.crx").getFile());
+        String pathToCrx = System.getProperty("extension-crx");
+        File kogitoPlugin = new File(pathToCrx);
         chromeOptions.addExtensions(kogitoPlugin);
         chromeDriver = new ChromeDriver(chromeOptions);
     }
@@ -42,6 +44,7 @@ public class SimpleIT {
 
         new WebDriverWait(chromeDriver, 5);
 
+        // TODO google-chrome --pack-extension=/home/tdavid/Downloads/chrome_extension/kche
 
 //        ExpectedConditions.alertIsPresent().
 //                new Wait<>()
