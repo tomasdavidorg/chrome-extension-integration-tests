@@ -20,13 +20,11 @@ jobs:
       - name: Start Xvfb
         run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 
-      - name: Unzip extension
-        run: unzip src/test/resources/chrome_extension_kogito_kie_editors_0.2.8.zip
+      - name: Install crx tool
+        run: npm install -g crx
 
       - name: Pack extension to crx
-        env:
-          DISPLAY: ":99.0"
-        run: google-chrome --pack-extension=dist
+        run: crx pack dist -o chrome-extension.crx
         
       - name: Build with Maven
         env:
