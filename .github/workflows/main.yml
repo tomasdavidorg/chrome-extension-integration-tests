@@ -24,6 +24,8 @@ jobs:
         run: unzip src/test/resources/chrome_extension_kogito_kie_editors_0.2.8.zip
 
       - name: Pack extension to crx
+        env:
+          DISPLAY: ":99.0"
         run: google-chrome --pack-extension=dist
         
       - name: Build with Maven
