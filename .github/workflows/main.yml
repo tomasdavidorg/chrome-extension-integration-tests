@@ -32,4 +32,4 @@ jobs:
       - name: Build with Maven
         env:
           DISPLAY: ":99.0"
-        run: mvn -B clean verify --file pom.xml -Dextension-crx=${{ github.workspace }}/chrome-extension.crx
+        run: mvn -B clean verify --file pom.xml -Dchrome.extension.zip=${{ github.workspace }}/chrome-extension.crx

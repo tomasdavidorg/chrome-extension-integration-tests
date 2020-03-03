@@ -1,6 +1,7 @@
 package org.kie.kogito.tooling;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -11,22 +12,26 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class SimpleIT {
+
+    private static final String CHROME_EXTENSION_ZIP_PROPERTY = "chrome.extension.zip",
+            EVALUATION_EXAMPLE_URL = "https://github.com/kiegroup/kie-wb-playground/blob/master/evaluation/src/main/resources/";
 
     private WebDriver chromeDriver;
 
     @BeforeEach
     public void createDriver() {
         ChromeOptions chromeOptions = new ChromeOptions();
-//        File kogitoPlugin = new File(getClass().getClassLoader().getResource("dist.crx").getFile());
-        String pathToCrx = System.getProperty("extension-crx");
-        File kogitoPlugin = new File(pathToCrx);
-        chromeOptions.addExtensions(kogitoPlugin);
+        String chromeExtensionZip = System.getProperty(CHROME_EXTENSION_ZIP_PROPERTY);
+        if (chromeExtensionZip == null) {
+            throw new RuntimeException("Please set " + CHROME_EXTENSION_ZIP_PROPERTY + " property to zipped Kogito tooling distribution.");
+        }
+        File chromeExtensionZipFile = new File(chromeExtensionZip);
+        chromeOptions.addExtensions(chromeExtensionZipFile);
         chromeDriver = new ChromeDriver(chromeOptions);
     }
 
@@ -38,36 +43,34 @@ public class SimpleIT {
     }
 
     @Test
-    public void openGoogleTest() throws InterruptedException {
-        chromeDriver.get("https://github.com/kiegroup/kie-wb-playground/blob/master/evaluation/src/main/resources/");
+    public void openGoogleTest() throws InterruptedException, IOException {
+        chromeDriver.get(EVALUATION_EXAMPLE_URL);
         chromeDriver.findElement(By.linkText("evaluation.bpmn")).click();
 
-        new WebDriverWait(chromeDriver, 5);
+//        Files.write(Paths.get("target", "screen.html"), chromeDriver.getPageSource().getBytes());
+//        File screenshotAs = ((TakesScreenshot) chromeDriver).getScreenshotAs(OutputType.FILE);
+//        Files.copy(screenshotAs.toPath(), Paths.get("target", "aaa"), StandardCopyOption.REPLACE_EXISTING);
 
-        // TODO google-chrome --pack-extension=/home/tdavid/Downloads/chrome_extension/kche
+        By kogitoFrame = By.className("kogito-iframe");
+        new WebDriverWait(chromeDriver, 2).until(ExpectedConditions.presenceOfElementLocated(kogitoFrame));
 
-//        ExpectedConditions.alertIsPresent().
-//                new Wait<>()
-//        for (int i = 0; i< 5; i++) {
-//            W
-//            boolean displayed = chromeDriver.findElement(By.id("loading-screen")).isDisplayed();
-//
-//            System.out.println("###" + displayed);
-//        }
+        chromeDriver.switchTo().frame(chromeDriver.findElement(kogitoFrame));
 
-        Thread.sleep(5000);
+        By explorerIcon = By.className("fa-eye");
+        new WebDriverWait(chromeDriver, 10).until(ExpectedConditions.presenceOfElementLocated(explorerIcon));
+
+        chromeDriver.switchTo().defaultContent();
+
+        WebElement sourceView = chromeDriver.findElement(By.className("js-file-line-container"));
+        WebElement kogitoView = chromeDriver.findElement(kogitoFrame);
+
         KogitoButtons kogitoButtons = PageFactory.initElements(chromeDriver, KogitoButtons.class);
         kogitoButtons.seeAsSource();
-        Assertions.assertThat(chromeDriver.findElement(By.className("kogito-iframe-container")).isDisplayed()).isFalse();
-        Assertions.assertThat(chromeDriver.findElement(By.className("js-file-line-container")).isDisplayed()).isTrue();
+        Assertions.assertThat(kogitoView.isDisplayed()).isFalse();
+        Assertions.assertThat(sourceView.isDisplayed()).isTrue();
 
         kogitoButtons.seeAsDiagram();
-        Assertions.assertThat(chromeDriver.findElement(By.className("kogito-iframe-container")).isDisplayed()).isTrue();
-        Assertions.assertThat(chromeDriver.findElement(By.className("js-file-line-container")).isDisplayed()).isFalse();
-//        Assertions.assertThat()
-
-       // chromeDriver.findElement(By.className("kogito-button")).click();
-
-        Thread.sleep(20000);
+        Assertions.assertThat(kogitoView.isDisplayed()).isTrue();
+        Assertions.assertThat(sourceView.isDisplayed()).isFalse();
     }
 }
