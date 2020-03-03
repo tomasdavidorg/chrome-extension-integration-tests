@@ -27,15 +27,21 @@ jobs:
         run: npx crx pack dist -o chrome-extension.crx
 
       - name: Start Xvfb
-        run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+        run: /usr/bin/Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
         
       - name: Build with Maven
         env:
           DISPLAY: ":99.0"
         run: mvn -B clean verify --file pom.xml -DchromeExtensionZip=${{ github.workspace }}/chrome-extension.crx
 
-      - name: Archive target directory
+      - name: Archive png screen
         uses: actions/upload-artifact@v1
         with:
-          name: target
-          path: target
+          name: screen.png
+          path: target/screen.png
+
+      - name: Archive html screen
+        uses: actions/upload-artifact@v1
+        with:
+          name: screen.html
+          path: target/screen.html
