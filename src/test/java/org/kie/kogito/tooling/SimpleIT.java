@@ -57,7 +57,7 @@ public class SimpleIT {
         chromeDriver.switchTo().frame(chromeDriver.findElement(kogitoFrame));
 
         By explorerIcon = By.className("fa-eye");
-        new WebDriverWait(chromeDriver, 10).until(ExpectedConditions.presenceOfElementLocated(explorerIcon));
+        new WebDriverWait(chromeDriver, 15).until(ExpectedConditions.presenceOfElementLocated(explorerIcon));
 
         chromeDriver.switchTo().defaultContent();
 
