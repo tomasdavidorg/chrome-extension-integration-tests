@@ -35,7 +35,7 @@ jobs:
         run: mvn -B clean verify --file pom.xml -DchromeExtensionZip=${{ github.workspace }}/chrome-extension.crx
 
       - name: Archive target directory
-          uses: actions/upload-artifact@v1
-          with:
-            name: target
-            path: target
+        uses: actions/upload-artifact@v1
+        with:
+          name: target
+          path: target
