@@ -18,7 +18,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class SimpleIT {
 
-    private static final String CHROME_EXTENSION_ZIP_PROPERTY = "chrome.extension.zip",
+    private static final String CHROME_EXTENSION_ZIP_PROPERTY = "chromeExtensionZip",
             EVALUATION_EXAMPLE_URL = "https://github.com/kiegroup/kie-wb-playground/blob/master/evaluation/src/main/resources/";
 
     private WebDriver chromeDriver;
