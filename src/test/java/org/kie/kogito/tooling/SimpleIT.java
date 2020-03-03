@@ -2,12 +2,17 @@ package org.kie.kogito.tooling;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -36,7 +41,11 @@ public class SimpleIT {
     }
 
     @AfterEach
-    public void teardown() {
+    public void teardown() throws IOException {
+        Files.write(Paths.get("target", "screen.html"), chromeDriver.getPageSource().getBytes());
+        File screenshotAs = ((TakesScreenshot) chromeDriver).getScreenshotAs(OutputType.FILE);
+        Files.copy(screenshotAs.toPath(), Paths.get("target", "screen.png"), StandardCopyOption.REPLACE_EXISTING);
+
         if (chromeDriver != null) {
             chromeDriver.quit();
         }
@@ -47,9 +56,6 @@ public class SimpleIT {
         chromeDriver.get(EVALUATION_EXAMPLE_URL);
         chromeDriver.findElement(By.linkText("evaluation.bpmn")).click();
 
-//        Files.write(Paths.get("target", "screen.html"), chromeDriver.getPageSource().getBytes());
-//        File screenshotAs = ((TakesScreenshot) chromeDriver).getScreenshotAs(OutputType.FILE);
-//        Files.copy(screenshotAs.toPath(), Paths.get("target", "aaa"), StandardCopyOption.REPLACE_EXISTING);
 
         By kogitoFrame = By.className("kogito-iframe");
         new WebDriverWait(chromeDriver, 2).until(ExpectedConditions.presenceOfElementLocated(kogitoFrame));
