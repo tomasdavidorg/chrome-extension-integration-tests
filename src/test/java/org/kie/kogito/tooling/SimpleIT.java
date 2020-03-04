@@ -1,17 +1,19 @@
 package org.kie.kogito.tooling;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -22,6 +24,8 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class SimpleIT {
 
     private static final String CHROME_EXTENSION_ZIP_PROPERTY = "chromeExtensionZip",
@@ -30,7 +34,7 @@ public class SimpleIT {
     private WebDriver chromeDriver;
 
     @BeforeEach
-    public void createDriver() {
+    public void setupDriver() {
         ChromeOptions chromeOptions = new ChromeOptions();
         String chromeExtensionZip = System.getProperty(CHROME_EXTENSION_ZIP_PROPERTY);
         if (chromeExtensionZip == null) {
@@ -51,34 +55,60 @@ public class SimpleIT {
     }
 
     @Test
-    public void openGoogleTest() throws InterruptedException, IOException {
+    public void openGoogleTest() throws InterruptedException, IOException, UnsupportedFlavorException {
+
+        // open Evaluation example BPMN file
         chromeDriver.get(EVALUATION_EXAMPLE_URL);
+        assertThat(isElementPresent(By.xpath("//div[starts-with(@id, 'external_editor')]/a"))).isTrue();
         chromeDriver.findElement(By.linkText("evaluation.bpmn")).click();
 
-
+        // switch to Kogito frame
         By kogitoFrame = By.className("kogito-iframe");
         new WebDriverWait(chromeDriver, 2).until(ExpectedConditions.presenceOfElementLocated(kogitoFrame));
-
         chromeDriver.switchTo().frame(chromeDriver.findElement(kogitoFrame));
 
+        // wait until editor is loaded
         By explorerIcon = By.className("fa-eye");
         new WebDriverWait(chromeDriver, 15).until(ExpectedConditions.presenceOfElementLocated(explorerIcon));
 
+        // switch back to default content
         chromeDriver.switchTo().defaultContent();
 
         WebElement sourceView = chromeDriver.findElement(By.className("js-file-line-container"));
         WebElement kogitoView = chromeDriver.findElement(kogitoFrame);
 
         KogitoButtons kogitoButtons = PageFactory.initElements(chromeDriver, KogitoButtons.class);
+
+        kogitoButtons.copyLinkToOnlineEditor();
+        String clipboardContent = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+        assertThat(clipboardContent).startsWith("https://kiegroup.github.io");
+
         kogitoButtons.seeAsSource();
-        Assertions.assertThat(kogitoView.isDisplayed()).isFalse();
-        Assertions.assertThat(sourceView.isDisplayed()).isTrue();
+        assertThat(kogitoView.isDisplayed()).isFalse();
+        assertThat(sourceView.isDisplayed()).isTrue();
 
         kogitoButtons.seeAsDiagram();
-        Assertions.assertThat(kogitoView.isDisplayed()).isTrue();
-        Assertions.assertThat(sourceView.isDisplayed()).isFalse();
+        assertThat(kogitoView.isDisplayed()).isTrue();
+        assertThat(sourceView.isDisplayed()).isFalse();
+
+        kogitoButtons.openOnlineEditor();
+
+        new WebDriverWait(chromeDriver, 15).until(chromeDriver -> chromeDriver.getWindowHandles().size() == 2);
+        chromeDriver.switchTo().window((String) chromeDriver.getWindowHandles().toArray()[1]);
+
+        chromeDriver.switchTo().defaultContent();
+
+        new WebDriverWait(chromeDriver, 15).until(ExpectedConditions.presenceOfElementLocated(By.xpath("//h3[text()='evaluation.bpmn']")));
     }
 
+    private boolean isElementPresent(By by) {
+        try {
+            chromeDriver.findElement(by);
+            return true;
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
 
     private void makeScreenshots() throws IOException {
         final String targetDir = "target",

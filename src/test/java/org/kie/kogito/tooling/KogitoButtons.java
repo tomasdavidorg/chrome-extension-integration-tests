@@ -20,12 +20,23 @@ public class KogitoButtons {
     @FindBy(xpath = "//button[@data-testid='go-fullscreen-button']")
     private WebElement fullScreenButton;
 
-
     public void seeAsSource() {
         seeAsSourceButton.click();
     }
 
     public void seeAsDiagram() {
         seeAsDiagramButton.click();
+    }
+
+    public void copyLinkToOnlineEditor() {
+        copyLinkButton.click();
+    }
+
+    public void openOnlineEditor() {
+        openInOnlineEditorButton.click();
+    }
+
+    public void fullScreen() {
+        fullScreenButton.click();
     }
 }
