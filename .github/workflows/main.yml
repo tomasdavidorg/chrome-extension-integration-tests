@@ -38,10 +38,4 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: screen.png
-          path: target/screen.png
-
-      - name: Archive html screen
-        uses: actions/upload-artifact@v1
-        with:
-          name: screen.html
-          path: target/screen.html
+          path: target/screenshots

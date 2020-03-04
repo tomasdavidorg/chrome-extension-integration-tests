@@ -3,6 +3,7 @@ package org.kie.kogito.tooling;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
@@ -42,9 +43,7 @@ public class SimpleIT {
 
     @AfterEach
     public void teardown() throws IOException {
-        Files.write(Paths.get("target", "screen.html"), chromeDriver.getPageSource().getBytes());
-        File screenshotAs = ((TakesScreenshot) chromeDriver).getScreenshotAs(OutputType.FILE);
-        Files.copy(screenshotAs.toPath(), Paths.get("target", "screen.png"), StandardCopyOption.REPLACE_EXISTING);
+        makeScreenshots();
 
         if (chromeDriver != null) {
             chromeDriver.quit();
@@ -78,5 +77,23 @@ public class SimpleIT {
         kogitoButtons.seeAsDiagram();
         Assertions.assertThat(kogitoView.isDisplayed()).isTrue();
         Assertions.assertThat(sourceView.isDisplayed()).isFalse();
+    }
+
+
+    private void makeScreenshots() throws IOException {
+        final String targetDir = "target",
+                screenshotsDir = "screenshots",
+                htmlScreenshot = "screen.html",
+                pngScreenshot = "screen.png";
+
+        Path screenshotsPath = Paths.get(targetDir, screenshotsDir);
+        Files.createDirectory(screenshotsPath);
+
+        // create html screenshot
+        Files.write(Paths.get(targetDir, screenshotsDir, htmlScreenshot), chromeDriver.getPageSource().getBytes());
+
+        // create png screenshot
+        File screenshot = ((TakesScreenshot) chromeDriver).getScreenshotAs(OutputType.FILE);
+        Files.copy(screenshot.toPath(), Paths.get(targetDir, screenshotsDir, pngScreenshot));
     }
 }
