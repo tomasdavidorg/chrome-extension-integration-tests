@@ -69,7 +69,7 @@ public class SimpleIT {
 
         // wait until editor is loaded
         By explorerIcon = By.className("fa-eye");
-        new WebDriverWait(chromeDriver, 30).until(ExpectedConditions.presenceOfElementLocated(explorerIcon));
+        new WebDriverWait(chromeDriver, 25).until(ExpectedConditions.presenceOfElementLocated(explorerIcon));
 
         // switch back to default content
         chromeDriver.switchTo().defaultContent();
