@@ -18,7 +18,7 @@ jobs:
           java-version: 1.8
           
       - name: Unzip extension
-        run: unzip src/test/resources/chrome_extension_kogito_kie_editors_0.2.8.zip
+        run: unzip src/test/resources/chrome_extension_kogito_kie_editors_0.2.9.zip
 
       - name: Install crx tool
         run: npm install crx
